@@ -303,9 +303,9 @@ function tone(freqs,dur=.16,type='sine',gain=.16){
 const ding=()=>tone([784,1175],.14);
 const oops=()=>tone([300,240],.14,'triangle',.12);
 /* ---------- 공통 화면 ---------- */
-function say(host,text,talk=true){
+function say(host,text,talk=true,voiceText){
   $('hostImg').src=CH[host].img;$('hostImg').alt=CH[host].name;
-  $('bubble').textContent=text;S.lastSpeech=text;if(talk)speak(text);
+  $('bubble').textContent=text;S.lastSpeech=voiceText||text;if(talk)speak(S.lastSpeech);
 }
 function addStar(n=1){
   S.stars+=n;store.set('stars',S.stars);$('starN').textContent=S.stars;
@@ -445,7 +445,7 @@ function quiz(type){
   function ask(){
     first=true;const q=qs[n];
     const opts=shuffle([q.c,...shuffle(C.filter(x=>x!==q.c)).slice(0,2)]);
-    if(type==='picture')say(host,`${q.w}! 어떤 글자로 시작할까?`);else say(host,`잘 들어 봐. ${q.w}! 어떤 글자로 시작할까?`);
+    if(type==='picture')say(host,'그림을 잘 보고 골라 봐!',true,`${q.w}! 어떤 글자로 시작할까?`);else say(host,'잘 듣고 골라 봐!',true,`잘 들어 봐. ${q.w}! 어떤 글자로 시작할까?`);
     const pic=type==='picture'?`<div class="qpic"><span class="e">${q.e}</span><span class="w"><span class="blank">${esc(q.w[0])}</span>${esc(q.w.slice(1))}</span></div>`
                                :`<div class="qpic"><button class="btn" id="again" style="font-size:26px">한 번 더 듣기</button></div>`;
     view(`<div class="dots">${qs.map((_,k)=>`<i class="${k<n?'on':''}"></i>`).join('')}</div><p class="title">어떤 글자로 시작할까?</p>${pic}
