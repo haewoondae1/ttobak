@@ -48,7 +48,8 @@ button:focus-visible{outline:4px solid var(--b);outline-offset:3px}
 .bubble{position:relative;background:var(--bubble);border:3px solid var(--frame);border-radius:20px;padding:9px 16px;font-size:clamp(18px,2.4vw,25px);line-height:1.35}
 .bubble::before{content:"";position:absolute;left:-12px;top:50%;width:16px;height:16px;background:var(--bubble);border-left:3px solid var(--frame);border-bottom:3px solid var(--frame);transform:translateY(-50%) rotate(45deg)}
 .hear{margin-left:auto;flex:none}
-.content{flex:1;min-height:0;overflow:auto;padding:14px 20px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.content{flex:1;min-height:0;overflow:auto;padding:14px 20px 22px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:16px}
+.content>:first-child{margin-top:auto}.content>:last-child{margin-bottom:auto}
 .title{font-size:clamp(26px,3.4vw,40px);text-align:center;margin:0}
 .sub{font-size:clamp(16px,1.9vw,21px);color:var(--ink-soft);text-align:center;margin:0}
 .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
@@ -447,7 +448,7 @@ function quiz(type){
     if(type==='picture')say(host,`${q.w}! 어떤 글자로 시작할까?`);else say(host,`잘 들어 봐. ${q.w}! 어떤 글자로 시작할까?`);
     const pic=type==='picture'?`<div class="qpic"><span class="e">${q.e}</span><span class="w"><span class="blank">${esc(q.w[0])}</span>${esc(q.w.slice(1))}</span></div>`
                                :`<div class="qpic"><button class="btn" id="again" style="font-size:26px">한 번 더 듣기</button></div>`;
-    view(`<div class="dots">${qs.map((_,k)=>`<i class="${k<n?'on':''}"></i>`).join('')}</div>${pic}
+    view(`<div class="dots">${qs.map((_,k)=>`<i class="${k<n?'on':''}"></i>`).join('')}</div><p class="title">어떤 글자로 시작할까?</p>${pic}
           <div class="choices">${opts.map(o=>`<button class="choice" data-o="${o}" aria-label="${NAME[o]}">${mag(o,C.indexOf(o))}</button>`).join('')}</div>`);
     if(type==='listen')$('again').onclick=()=>speak(q.w);
     on('[data-o]',e=>{
@@ -621,6 +622,8 @@ function myRoom(r){
   render();
 }
 /* ---------- 시작 ---------- */
+/* 아이폰: 첫 터치 전에는 소리가 막혀 있으니, 첫 터치 때 안내를 다시 읽어 준다 */
+document.addEventListener('pointerdown',()=>{try{if(S.sound&&S.lastSpeech&&!speechSynthesis.speaking)speak(S.lastSpeech)}catch(e){}},{once:true,capture:true});
 $('starN').textContent=S.stars;setSoundIcon();goHome();
 </script>
 </body>
